@@ -9,6 +9,8 @@ Parameters:
  log_path = Path of the gateway log file
 """
 import log_analysis_lib
+import csv
+
 
 # Get the log file path from the command line
 # Because this is outside of any function, log_path is a global variable
@@ -68,7 +70,7 @@ def generate_source_ip_log(ip_address):
         ip_address (str): Source IP address
     """
     # TODO: Complete function body per step 11
-    # Get all records that have the specified sourec IP address
+    # Get all records that have the specified source IP address
     # Save all records to a plain text .log file
     return
 

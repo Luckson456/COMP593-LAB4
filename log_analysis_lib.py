@@ -2,16 +2,24 @@
 Library of functions that are useful for analyzing plain-text log files.
 """
 import re
+import sys
+import os
+import pandas as pd 
+
 
 def main():
     # Get the log file path from the command line
     log_path = get_file_path_from_cmd_line()
 
     # TODO: Use filter_log_by_regex() to investigate the gateway log per Step 5
+    filtered_records,_ =filter_log_by_regex(log_path,'pam',print_summary=True,print_records=True)
 
     # TODO: Use filter_log_by_regex() to extract data from the gateway log per Step 6
+    filtered_records,extracted_data =filter_log_by_regex(log_path,'SRC=(.*?) DST=(.*?)LEN=(.*?)')
+    extracted_df =pd.DataFrame(extracted_data,columns=('Source IP','Destination IP','Length'))
+    extracted_df.to_csv('data.csv',index=False)
+    pass
 
-    return
 
 def get_file_path_from_cmd_line(param_num=1):
     """Gets a file path from a command line parameter.
@@ -26,7 +34,18 @@ def get_file_path_from_cmd_line(param_num=1):
         str: File path
     """
     # TODO: Implement the function body per Step 3
-    return
+    if len(sys.argv)<param_num +1 :
+        print(f'Error:Missing log file path expected as command line parameter {param_num}')
+        sys.exit('Script execution aborted')
+        
+    log_path=os.path.abspath(sys.argv[param_num])
+    
+    if not os.path.isfile(log_path):
+        print(f'Error: "{log_path}" is not the path of an existing file.')
+        sys.exit('Script execution aborted')
+
+    return log_path
+
 
 def filter_log_by_regex(log_path, regex, ignore_case=True, print_summary=False, print_records=False):
     """Gets a list of records in a log file that match a specified regex.
@@ -41,7 +60,7 @@ def filter_log_by_regex(log_path, regex, ignore_case=True, print_summary=False, 
     Returns:
         (list, list): List of records that match regex, List of tuples of captured data
     """
-    # Initalize lists returned by function
+    # Initialize lists returned by function
     filtered_records = []
     captured_data = []
 
@@ -57,7 +76,7 @@ def filter_log_by_regex(log_path, regex, ignore_case=True, print_summary=False, 
                 # Add lines that match to list of filtered records
                 filtered_records.append(record[:-1]) # Remove the trailing new line
                 # Check if regex match contains any capture groups
-                if match.lastindex:
+                if match.lastindex :
                     # Add tuple of captured data to captured data list
                     captured_data.append(match.groups())
 
