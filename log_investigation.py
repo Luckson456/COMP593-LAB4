@@ -93,6 +93,19 @@ def generate_invalid_user_report(log_path,regex_pattern):
     extracted_data=[]
     
     with open(log_path,'r')as log_file:
+        for line in log_file:
+            match=re.search(regex_pattern,line)
+            if match:
+                src, dst,user=match.groups()
+                if user.lower()=='invalid':
+                    extracted_data.append((src,dst,user))
+                    
+    if extracted_data:
+        report_path='invalid_user_login_report.csv'
+        with open(report_path,'w',newline='')as csv_file:
+            writer=csv.writer(csv_file)
+            writer.writerow(['Source IP','Destination IP','Username'])
+            writer.writerows(extracted_data)
     # Get data from records that show attempted invalid user login
     # Generate the CSV report
     return
