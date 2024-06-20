@@ -110,7 +110,7 @@ def generate_invalid_user_report(log_path,regex_pattern):
     # Generate the CSV report
     return
 
-def generate_source_ip_log(ip_address):
+def generate_source_ip_log(log_path,ip_address,output_file):
     """Produces a plain text .log file containing all records from a source log
     file that contain a specified source IP address.
 
@@ -118,6 +118,16 @@ def generate_source_ip_log(ip_address):
         ip_address (str): Source IP address
     """
     # TODO: Complete function body per step 11
+    extracted_data=[]
+    
+    with open(log_path,'r') as log_file:
+        for line in log_file:
+            if ip_address in line:
+                extracted_data.append(line.strip())
+                
+    if extracted_data:
+        with open(output_file,'w')as output_log:
+            output_log.write('\n'.join(extracted_data))
     # Get all records that have the specified source IP address
     # Save all records to a plain text .log file
     return
